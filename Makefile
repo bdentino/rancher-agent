@@ -8,7 +8,7 @@ TARGETS := $(shell ls scripts)
 	@mv .dapper.tmp .dapper
 
 $(TARGETS): .dapper
-	./.dapper $@
+	DAPPER_HOST_ARCH=amd64 DOCKER_BUILDKIT=0 DAPPER_ENV="DOCKER_BUILDKIT DAPPER_HOST_ARCH" ./.dapper $@
 
 trash: .dapper
 	./.dapper -m bind trash

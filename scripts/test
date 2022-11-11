@@ -1,26 +1,11 @@
 #!/bin/bash
 set -e
 
-cleanup()
-{
-    local exit=$?
-    kill $PID || true
-    wait $PID || true
-    exit $exit
-}
-
 cd $(dirname $0)/..
 
-if grep -q overlay /proc/filesystems; then
-    STORAGE=overlay
-else
-    STORAGE=aufs
-fi
-docker daemon -s $STORAGE -D >/var/log/docker.log 2>&1 &
-PID=$!
-trap cleanup EXIT
+service docker start
 
-sleep 1
+sleep 5
 
 docker info
 
@@ -35,9 +20,7 @@ fi
 
 echo Running tests
 
-docker pull ibuildthecloud/helloworld:latest
-
-docker run -i -d busybox:1
+# docker run -i -d busybox:1
 
 PACKAGES=". $(find -name '*.go' | xargs -I{} dirname {} |  cut -f2 -d/ | sort -u | grep -Ev '(^\.$|.git|.trash-cache|vendor|bin)' | sed -e 's!^!./!' -e 's!$!/...!')"
 
