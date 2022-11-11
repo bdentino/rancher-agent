@@ -153,6 +153,12 @@ func (s *ContainerStatsHandler) Handle(key string, initialMessage string, incomi
 				pidMap[cont.ID] = pid
 			}
 		}
+
+		if len(readerMap) == 0 {
+			log.Error("No monitorable containers on host; exiting to avoid synchronous infinite loop")
+			return
+		}
+
 		for {
 			infos := []containerInfo{}
 			for id, r := range readerMap {
