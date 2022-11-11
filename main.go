@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"net/http"
+  _ "net/http/pprof"
 
 	"github.com/rancher/agent/cloudprovider"
 	"github.com/rancher/agent/events"
@@ -20,7 +22,17 @@ var (
 	VERSION = "dev"
 )
 
+func handle(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte(r.RemoteAddr))
+}
+
 func main() {
+  go func() {
+  	log.Info("Launching pprof server")
+		http.HandleFunc("/", handle)
+  	http.ListenAndServe(":8080", nil)
+  }()
+
 	logserver.StartServerWithDefaults()
 	version := flag.Bool("version", false, "go-agent version")
 	rurl := flag.String("url", "", "registration url")
