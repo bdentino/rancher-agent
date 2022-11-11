@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"net/http"
 
 	"github.com/rancher/agent/cloudprovider"
 	"github.com/rancher/agent/events"
@@ -20,10 +19,6 @@ import (
 var (
 	VERSION = "dev"
 )
-
-func handle(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.RemoteAddr))
-}
 
 func main() {
 	logserver.StartServerWithDefaults()
